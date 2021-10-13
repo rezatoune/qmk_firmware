@@ -48,10 +48,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_AZERTY] = LAYOUT( \
   KC_ESC,   FR_AMPR, FR_EACU, FR_DQUO, FR_QUOT, FR_LPRN,                   FR_MINS, FR_EGRV, FR_UNDS, FR_CCED, FR_AGRV, FR_RPRN, \
-  XXXXXXX,  FR_A,    FR_Z,    FR_E,    FR_R,    FR_T,                      FR_Y,    FR_U,    FR_I,    FR_O,    FR_P,    FR_ASTR, \
+  KC_LABK,  FR_A,    FR_Z,    FR_E,    FR_R,    FR_T,                      FR_Y,    FR_U,    FR_I,    FR_O,    FR_P,    FR_ASTR, \
   KC_TAB,   FR_Q,    FR_S,    FR_D,    FR_F,    FR_G,                      FR_H,    FR_J,    FR_K,    FR_L,    FR_M,    FR_UGRV, \
   FR_EQL, FR_W,    FR_X,    FR_C,    FR_V,    FR_B,  KC_VERR,     XXXXXXX,FR_N,   FR_COMM, FR_SCLN, FR_COLN, FR_EXLM, FR_DLR,\
-                  KC_LABK,KC_LALT,KC_CTPD, KC_LOWER, KC_LSFT,      KC_SPC,  KC_RAISE, KC_CTPU, KC_RALT, FR_CIRC \
+                  KC_LGUI,KC_LALT,KC_CTPD, KC_LOWER, KC_LSFT,      KC_SPC,  KC_RAISE, KC_CTPU, KC_RALT, FR_CIRC \
 ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
