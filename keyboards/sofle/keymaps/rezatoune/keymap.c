@@ -6,7 +6,6 @@
 #define KC_CTPD LCTL_T(KC_PGDN)
 
 enum sofle_layers {
-    /* _M_XYZ = Mac Os, _W_XYZ = Win/Linux */
     _AZERTY,
     _LOWER,
     _RAISE,
@@ -15,8 +14,6 @@ enum sofle_layers {
 
 enum custom_keycodes {
     KC_AZERTY = SAFE_RANGE,
-    //KC_LOWER = LT(_LOWER, KC_BSPACE),
-    //KC_RAISE = LT(_RAISE, KC_ENTER),
     KC_ADJUST,
     KC_PRVWD,
     KC_NXTWD,
@@ -28,6 +25,8 @@ enum custom_keycodes {
 
 #define KC_LOWER LT(_LOWER, KC_BSPACE)
 #define KC_RAISE LT(_RAISE, KC_ENTER)
+
+
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -45,14 +44,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *            |      |      |      |      |/       /         \      \ |      |      |      |      |
  *            `----------------------------------'           '------''---------------------------'
  */
-
 [_AZERTY] = LAYOUT( \
-  KC_ESC,   FR_AMPR, FR_EACU, FR_DQUO, FR_QUOT, FR_LPRN,                   FR_MINS, FR_EGRV, FR_UNDS, FR_CCED, FR_AGRV, FR_RPRN, \
-  KC_LABK,  FR_A,    FR_Z,    FR_E,    FR_R,    FR_T,                      FR_Y,    FR_U,    FR_I,    FR_O,    FR_P,    FR_ASTR, \
-  KC_TAB,   FR_Q,    FR_S,    FR_D,    FR_F,    FR_G,                      FR_H,    FR_J,    FR_K,    FR_L,    FR_M,    FR_UGRV, \
-  FR_EQL, FR_W,    FR_X,    FR_C,    FR_V,    FR_B,  KC_VERR,     XXXXXXX,FR_N,   FR_COMM, FR_SCLN, FR_COLN, FR_EXLM, FR_DLR,\
-                  KC_LGUI,KC_LALT,KC_CTPD, KC_LOWER, KC_LSFT,      KC_SPC,  KC_RAISE, KC_CTPU, KC_RALT, FR_CIRC \
+  KC_ESC,  FR_AMPR, FR_EACU, FR_DQUO, FR_QUOT, FR_LPRN,                    FR_MINS, FR_EGRV, FR_UNDS, FR_CCED, FR_AGRV, FR_RPRN, \
+  KC_LABK,  FR_A,    FR_Z,    FR_E,    FR_R,    FR_T,                       FR_Y,    FR_U,    FR_I,    FR_O,    FR_P,    FR_ASTR, \
+  KC_TAB,  FR_Q,    FR_S,    FR_D,    FR_F,    FR_G,                       FR_H,    FR_J,    FR_K,    FR_L,    FR_M,    FR_UGRV, \
+  KC_EQL,  FR_W,    FR_X,    FR_C,    FR_V,    FR_B,  KC_VERR,     XXXXXXX,FR_N,    FR_COMM, FR_SCLN, FR_COLN, FR_EXLM, FR_DLR,\
+                  KC_LGUI,KC_LALT,KC_CTPU, KC_LSFT, KC_LOWER,      KC_RAISE,  KC_SPC, KC_CTPD, KC_RALT, FR_CIRC \
 ),
+
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |  F1  |  F2  |  F3  |  F4  |  F5  |                    |  F6  |  F7  |  F8  |  F9  | F10  | F11  |
@@ -118,114 +117,51 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
-uint32_t layer_state_set_user(uint32_t state) {
-    return update_tri_layer_state(state, _RAISE, _LOWER, _ADJUST);
+
+// This is called each time there is a layer state change.
+// This takes care of (de)activating, no need for more cases in the process_record_user function.
+// See https://docs.qmk.fm/#/ref_functions?id=update_tri_layer_statestate-x-y-z
+layer_state_t layer_state_set_user(layer_state_t state) {
+    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+#ifdef CONSOLE_ENABLE
+    uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u, layer:%u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count, layer_state);
+#endif 
+
     switch (keycode) {
-        case KC_AZERTY:
-            if (record->event.pressed) {
-                set_single_persistent_default_layer(_AZERTY);
-            }
-            return false;
-       /* case KC_LOWER:
-            if (record->event.pressed) {
-                layer_on(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            } else {
-                layer_off(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            }
-            //return false;
-        case KC_RAISE:
-            if (record->event.pressed) {
-                layer_on(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            } else {
-                layer_off(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            }
-            //return false;
-        case KC_ADJUST:
-            if (record->event.pressed) {
-                layer_on(_ADJUST);
-            } else {
-                layer_off(_ADJUST);
-            }
-            return false; */
         case KC_PRVWD:
             if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    register_mods(mod_config(MOD_LALT));
-                    register_code(KC_LEFT);
-                } else {
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_LEFT);
-                }
+                register_mods(mod_config(MOD_LCTL));
+                register_code(KC_LEFT);
             } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LALT));
-                    unregister_code(KC_LEFT);
-                } else {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_LEFT);
-                }
+                unregister_mods(mod_config(MOD_LCTL));
+                unregister_code(KC_LEFT);
             }
             break;
         case KC_NXTWD:
              if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    register_mods(mod_config(MOD_LALT));
-                    register_code(KC_RIGHT);
-                } else {
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_RIGHT);
-                }
+                register_mods(mod_config(MOD_LCTL));
+                register_code(KC_RIGHT);
             } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LALT));
-                    unregister_code(KC_RIGHT);
-                } else {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_RIGHT);
-                }
+                unregister_mods(mod_config(MOD_LCTL));
+                unregister_code(KC_RIGHT);
             }
             break;
         case KC_LSTRT:
             if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                     //CMD-arrow on Mac, but we have CTL and GUI swapped
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_LEFT);
-                } else {
-                    register_code(KC_HOME);
-                }
+                register_code(KC_HOME);
             } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_LEFT);
-                } else {
-                    unregister_code(KC_HOME);
-                }
+                unregister_code(KC_HOME);
             }
             break;
         case KC_LEND:
             if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    //CMD-arrow on Mac, but we have CTL and GUI swapped
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_RIGHT);
-                } else {
-                    register_code(KC_END);
-                }
+                register_code(KC_END);
             } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_RIGHT);
-                } else {
-                    unregister_code(KC_END);
-                }
+                unregister_code(KC_END);
             }
             break;
         case KC_DLINE:
@@ -275,7 +211,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
         case KC_VERR:
-	    if (record->event.pressed) {
+            if (record->event.pressed) {
                 register_mods(mod_config(MOD_LGUI));
                 register_code(KC_L);
             } else {
@@ -286,6 +222,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return true;
 }
+
 
 #ifdef ENCODER_ENABLE
 
