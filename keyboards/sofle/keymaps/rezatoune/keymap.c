@@ -2,7 +2,7 @@
 #include "keymap_french.h"
 
 
-#define KC_CTPU RCTL_T(KC_PGUP) // PG haut si tapé, RCTRL si tenu
+#define KC_CTPU RCTL_T(KC_PGUP) // PG_haut si tapé, RCTRL si tenu. Should be the same as MT(MOD_RCTL, KC_PGUP)
 #define KC_CTPD LCTL_T(KC_PGDN)
 
 enum sofle_layers {
@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  FR_A,    FR_Z,    FR_E,    FR_R,    FR_T,                       FR_Y,    FR_U,    FR_I,    FR_O,    FR_P,    FR_CIRC, \
   FR_DLR,  FR_Q,    FR_S,    FR_D,    FR_F,    FR_G,                       FR_H,    FR_J,    FR_K,    FR_L,    FR_M,    FR_UGRV, \
   FR_EQL,  FR_W,    FR_X,    FR_C,    FR_V,    FR_B,  KC_VERR,     XXXXXXX,FR_N,    FR_COMM, FR_SCLN, FR_COLN, FR_EXLM, FR_ASTR, \
-                  KC_LGUI,KC_LALT,KC_CTPU, KC_LSFT, KC_LOWER,      KC_RAISE,  KC_SPC, KC_CTPD, KC_RALT, KC_DEL \
+                  KC_LGUI,KC_LALT, KC_LCTL, KC_LSFT, KC_LOWER,      KC_RAISE,  KC_SPC, KC_RCTRL, KC_RALT, KC_DEL \
 ),
 
 /* LOWER
@@ -129,7 +129,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 #ifdef CONSOLE_ENABLE
     uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u, layer:%u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count, layer_state);
-#endif 
+#endif
 
     switch (keycode) {
         case KC_PRVWD:
